@@ -1,0 +1,286 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────
+   Design tokens — light theme, one brand violet, warm peach support
+   ────────────────────────────────────────────────────────────── */
+@theme inline {
+  --color-paper: #faf9fc;
+  --color-surface: #ffffff;
+  --color-ink: #1c1b33;
+  --color-ink-soft: #4b4966;
+  --color-muted: #6b6884;
+  --color-line: #e8e5f0;
+
+  --color-brand: #5b47e0;
+  --color-brand-deep: #4636bc;
+  --color-brand-tint: #f0edfe;
+  --color-brand-tint-2: #e4dffc;
+
+  --color-peach: #fce9dc;
+  --color-peach-deep: #b85a26;
+  --color-sage: #e3f2ea;
+  --color-sage-deep: #2b7650;
+  --color-sky: #e4f0fa;
+  --color-sky-deep: #26658f;
+  --color-amber: #fbf0d6;
+  --color-amber-deep: #85600f;
+  --color-rose: #fbe5ea;
+  --color-rose-deep: #aa3553;
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  body {
+    background-color: #f8f7fe;
+    color: var(--color-ink);
+    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: var(--color-brand-tint-2);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--color-paper); }
+  ::-webkit-scrollbar-thumb { background: #d6d1ea; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #b9b1e0; }
+}
+
+@layer components {
+  /* Display headings */
+  .display {
+    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--color-ink);
+  }
+  .display em {
+    font-style: italic;
+    color: var(--color-brand);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.5rem;
+    height: 1.5px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  .eyebrow--center::after {
+    content: "";
+    width: 1.5rem;
+    height: 1.5px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-radius: 999px;
+    padding: 0.8rem 1.6rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+
+  .btn-primary {
+    color: #fff;
+    background: linear-gradient(180deg, #6853ec 0%, #5340d6 100%);
+    box-shadow: 0 1px 2px rgba(40, 30, 120, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(180deg, #5f4ae6 0%, #4a38c9 100%);
+    box-shadow: 0 6px 18px rgba(70, 54, 188, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+
+  .btn-ghost {
+    color: var(--color-ink);
+    background: #fff;
+    border: 1px solid var(--color-line);
+    box-shadow: 0 1px 2px rgba(28, 27, 51, 0.04);
+  }
+  .btn-ghost:hover {
+    border-color: #cfc9ea;
+    background: var(--color-brand-tint);
+  }
+
+  .btn-sm { padding: 0.6rem 1.15rem; font-size: 0.85rem; }
+
+  /* Surfaces */
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1.25rem;
+    box-shadow: 0 1px 2px rgba(28, 27, 51, 0.03), 0 8px 24px -12px rgba(60, 45, 150, 0.12);
+  }
+  .card-hover {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    border-color: #d8d2f0;
+    box-shadow: 0 1px 2px rgba(28, 27, 51, 0.03), 0 18px 36px -16px rgba(60, 45, 150, 0.22);
+  }
+
+  /* Soft gradient washes (no glow blobs, no noise) */
+  .wash-lilac {
+    background:
+      linear-gradient(to bottom, transparent 72%, var(--color-paper) 100%),
+      radial-gradient(60rem 28rem at 100% 0%, rgba(91, 71, 224, 0.08), transparent 60%),
+      radial-gradient(40rem 24rem at 0% 100%, rgba(252, 233, 220, 0.7), transparent 60%),
+      var(--color-paper);
+  }
+  .wash-peach {
+    background: linear-gradient(135deg, #fff4ec 0%, #fbeefa 55%, #f1edfe 100%);
+  }
+  .wash-soft {
+    background: linear-gradient(180deg, #ffffff 0%, #f6f4fd 100%);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--color-brand-tint);
+    color: var(--color-brand-deep);
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Gradient hover border — draws a soft violet→lilac→peach outline on hover
+     without shifting layout. Uses the masked-padding technique so it respects
+     the element's border-radius. */
+  .grad-border {
+    position: relative;
+    border: 1px solid var(--color-line);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .grad-border::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--color-brand) 0%, #9a8af5 45%, var(--color-peach-deep) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .grad-border:hover { border-color: transparent; }
+  .grad-border:hover::after { opacity: 1; }
+  .grad-border:hover {
+    box-shadow: 0 18px 40px -20px rgba(91, 71, 224, 0.28);
+  }
+
+  /* Always-on gradient border (no hover needed) — for featured surfaces. */
+  .grad-border-on {
+    position: relative;
+    border: 1px solid transparent;
+    background:
+      linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+      linear-gradient(135deg, var(--color-brand) 0%, #9a8af5 50%, var(--color-peach-deep) 100%) border-box;
+  }
+
+  /* Soft gradient text accent for inline emphasis */
+  .grad-text {
+    background: linear-gradient(120deg, var(--color-brand) 0%, #9a8af5 55%, var(--color-peach-deep) 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Top accent bar — thin gradient line that sits on the top edge of a card. */
+  .grad-top {
+    position: relative;
+  }
+  .grad-top::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 14%;
+    right: 14%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--color-brand), #9a8af5, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease, left 0.3s ease, right 0.3s ease;
+  }
+  .grad-top:hover::before {
+    opacity: 1;
+    left: 6%;
+    right: 6%;
+  }
+}
+
+/* ── Motion ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 40s linear infinite; }
+.animate-marquee:hover { animation-play-state: paused; }
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.8); }
+}
+.animate-dot-pulse { animation: dot-pulse 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
