@@ -43,7 +43,7 @@ const serviceCategories = [
       { name: "AI Workflow Automation", desc: "Cross-app triggers & flows"        },
       { name: "Custom AI Consulting",   desc: "Strategy & implementation plan"    },
     ],
-    tools: "Zapier · Make · HubSpot · OpenAI · Twilio",
+    tools: "n8n · Make · HubSpot · OpenAI · Supabase · ElevenLabs",
   },
   {
     id: "industry", icon: faHandshake, badge: "Specialized",
@@ -130,7 +130,7 @@ const engagements = [
 
 const tools = [
   { name: "OpenAI", icon: Bot },
-  { name: "Zapier", icon: Zap },
+  { name: "ElevenLabs", icon: Sparkles },
   { name: "Make.com", icon: Workflow },
   { name: "React", icon: Code2 },
   { name: "Next.js", icon: Globe },
@@ -175,7 +175,7 @@ function ServiceItem({ cat, index }) {
           </span>
           <span className="flex-1 min-w-0">
             <span className="flex items-center gap-2.5 flex-wrap">
-              <span className="font-semibold text-lg text-ink">{cat.title}</span>
+              <span className="font-extrabold text-lg text-ink uppercase tracking-tight">{cat.title}</span>
               <span className="chip border border-brand/10">{cat.badge}</span>
             </span>
             <span className="block mt-0.5 text-sm text-ink-soft leading-snug">{cat.desc}</span>
@@ -347,16 +347,21 @@ export default function ServicesPage() {
               className="hidden sm:block absolute left-[1.35rem] top-6 bottom-6 w-[2px] rounded-full bg-gradient-to-b from-brand via-[#9a8af5] to-peach-deep"
             />
             {processSteps.map((step, i) => (
-              <li key={step.title} data-gsap className="relative flex items-start gap-4">
-                <span className={`relative z-10 w-11 h-11 rounded-full bg-gradient-to-br ${step.tint} flex items-center justify-center flex-shrink-0 shadow-sm`}>
-                  <FontAwesomeIcon icon={step.icon} className="text-sm" />
+              <li key={step.title} data-gsap className="relative flex items-start gap-4 sm:gap-6 group">
+                <span className={`relative z-10 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${step.tint} flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform`}>
+                  <FontAwesomeIcon icon={step.icon} className="text-sm sm:text-base" />
                 </span>
-                <div className="grad-border card flex-1 p-5 hover:-translate-y-0.5">
+                <div className="relative card rounded-2xl border border-line flex-1 p-5 sm:p-6 hover:border-brand/30 shadow-sm transition-all duration-300">
+                  {/* Speech pointer notch */}
+                  <div
+                    aria-hidden="true"
+                    className="hidden sm:block absolute -left-2 top-4 w-0 h-0 border-y-[7px] border-y-transparent border-r-[8px] border-r-white drop-shadow-[-1px_0_1px_rgba(0,0,0,0.03)]"
+                  />
                   <p className="flex items-baseline gap-2.5">
-                    <span className="display text-2xl text-brand/35">{step.number}</span>
-                    <span className="font-semibold text-ink">{step.title}</span>
+                    <span className="display text-2xl text-brand/40 font-bold">{step.number}</span>
+                    <span className="font-extrabold text-base text-ink uppercase tracking-tight">{step.title}</span>
                   </p>
-                  <p className="mt-1.5 text-sm text-ink-soft leading-relaxed">{step.desc}</p>
+                  <p className="mt-2 text-sm text-ink-soft leading-relaxed">{step.desc}</p>
                 </div>
               </li>
             ))}

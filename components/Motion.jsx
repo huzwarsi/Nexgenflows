@@ -47,14 +47,76 @@ export function CountUp({ to, decimals = 0, suffix = "", duration = 1.4 }) {
   );
 }
 
-/** Eyebrow + serif heading + optional blurb. Pass heading as JSX; wrap emphasis in <em>. */
+/** Scroll-triggered text animation that animates smoothly as the user scrolls */
+export function ScrollTextReveal({
+  children,
+  as = "h2",
+  className = "",
+  delay = 0,
+  y = 28,
+  amount = 0.25,
+}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount, once: false });
+  const Tag = motion[as] ?? motion.h2;
+
+  return (
+    <Tag
+      ref={ref}
+      initial={{ opacity: 0, y, filter: "blur(6px)" }}
+      animate={
+        isInView
+          ? { opacity: 1, y: 0, filter: "blur(0px)" }
+          : { opacity: 0, y, filter: "blur(6px)" }
+      }
+      transition={{
+        duration: 0.7,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className={className}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+/** Eyebrow + display heading + optional blurb with scroll-reactive text animations. */
 export function SectionHeading({ eyebrow, children, intro, align = "center", className = "" }) {
   const center = align === "center";
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount: 0.25, once: false });
+
   return (
-    <Reveal className={`${center ? "text-center mx-auto" : ""} max-w-2xl ${className}`}>
-      {eyebrow && <p className={`eyebrow ${center ? "eyebrow--center" : ""} mb-4`}>{eyebrow}</p>}
-      <h2 className="display text-4xl sm:text-5xl">{children}</h2>
-      {intro && <p className="mt-4 text-ink-soft text-base leading-relaxed">{intro}</p>}
-    </Reveal>
+    <div ref={ref} className={`${center ? "text-center mx-auto" : ""} max-w-3xl ${className}`}>
+      {eyebrow && (
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className={`eyebrow ${center ? "eyebrow--center" : ""} mb-3 sm:mb-4`}
+        >
+          {eyebrow}
+        </motion.p>
+      )}
+      <motion.h2
+        initial={{ opacity: 0, y: 26, filter: "blur(6px)" }}
+        animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 26, filter: "blur(6px)" }}
+        transition={{ duration: 0.65, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+        className="display text-4xl sm:text-5xl"
+      >
+        {children}
+      </motion.h2>
+      {intro && (
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ duration: 0.55, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-4 text-ink-soft text-base sm:text-lg leading-relaxed"
+        >
+          {intro}
+        </motion.p>
+      )}
+    </div>
   );
 }

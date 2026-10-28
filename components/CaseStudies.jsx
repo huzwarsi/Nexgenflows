@@ -1,6 +1,8 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { motion, useInView, animate } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight, faCheck, faHouse, faHospital,
@@ -12,12 +14,34 @@ import { Reveal, SectionHeading } from "@/components/Motion";
 import { useGsapReveal } from "@/components/useGsap";
 
 /* ── Mini dashboard sub-components ─────────────────────────────── */
-function Panel({ title, badge, badgeClass, children }) {
+function MiniCounter({ to, suffix = "", inView }) {
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    if (!inView) {
+      setVal(0);
+      return;
+    }
+    const controls = animate(0, to, {
+      duration: 1.6,
+      ease: "easeOut",
+      onUpdate: (latest) => setVal(Math.round(latest)),
+    });
+    return () => controls.stop();
+  }, [inView, to]);
+
+  return <span>{val}{suffix}</span>;
+}
+
+function Panel({ title, badge, badgeClass, badgeDot, children }) {
   return (
     <div className="rounded-xl border border-line bg-paper p-4 mb-6">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-semibold text-ink">{title}</span>
-        <span className={`text-[0.7rem] font-semibold px-2 py-0.5 rounded-full ${badgeClass}`}>{badge}</span>
+        <span className={`text-[0.7rem] font-semibold px-2 py-0.5 rounded-full ${badgeClass}`}>
+          {badgeDot && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block mr-1" />}
+          {badge}
+        </span>
       </div>
       <div className="divide-y divide-line">{children}</div>
     </div>
@@ -25,81 +49,116 @@ function Panel({ title, badge, badgeClass, children }) {
 }
 
 function RealEstateDashboard() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { amount: 0.35, once: false });
+
   const leads = [
     { name: "John M.",  stage: "Qualified",      icon: faCheck,      color: "text-sage-deep" },
     { name: "Sarah K.", stage: "In conversation", icon: faWhatsapp,   color: "text-[#1fa855]" },
     { name: "Alex T.",  stage: "Follow-up",       icon: faArrowRight, color: "text-brand" },
   ];
   return (
-    <Panel title="Lead pipeline" badge="Active" badgeClass="bg-sage text-sage-deep">
-      {leads.map((l) => (
-        <div key={l.name} className="flex items-center justify-between py-2.5">
-          <span className="flex items-center gap-2.5 text-sm text-ink">
-            <span className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-tint to-brand-tint-2 text-brand-deep text-xs font-semibold flex items-center justify-center">
-              <User className="w-3.5 h-3.5" />
+    <div ref={ref}>
+      <Panel title="Lead pipeline" badge="Active" badgeClass="bg-sage text-sage-deep" badgeDot>
+        {leads.map((l, idx) => (
+          <motion.div
+            key={l.name}
+            initial={{ opacity: 0, x: -8 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -8 }}
+            transition={{ duration: 0.4, delay: inView ? idx * 0.15 : 0, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center justify-between py-2.5"
+          >
+            <span className="flex items-center gap-2.5 text-sm text-ink">
+              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-tint to-brand-tint-2 text-brand-deep text-xs font-semibold flex items-center justify-center">
+                <User className="w-3.5 h-3.5" />
+              </span>
+              {l.name}
             </span>
-            {l.name}
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-muted">
-            <FontAwesomeIcon icon={l.icon} className={`text-[10px] ${l.color}`} />
-            {l.stage}
-          </span>
-        </div>
-      ))}
-    </Panel>
+            <span className="flex items-center gap-1.5 text-xs text-muted">
+              <FontAwesomeIcon icon={l.icon} className={`text-[10px] ${l.color}`} />
+              {l.stage}
+            </span>
+          </motion.div>
+        ))}
+      </Panel>
+    </div>
   );
 }
 
 function ClinicDashboard() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { amount: 0.35, once: false });
+
   const appts = [
     { time: "09:00", name: "Emma Wilson", status: "Confirmed" },
     { time: "10:30", name: "James Lee",   status: "Reminder sent" },
     { time: "14:00", name: "Maria Garcia",status: "Auto-booked" },
   ];
   return (
-    <Panel title="Today's schedule" badge="4 upcoming" badgeClass="bg-peach text-peach-deep">
-      {appts.map((a) => (
-        <div key={a.name} className="flex items-center justify-between py-2.5">
-          <span className="flex items-center gap-2.5 text-sm text-ink">
-            <span className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-peach-deep bg-peach rounded px-2 py-0.5">
-              <Clock className="w-3 h-3 text-peach-deep" />
-              {a.time}
+    <div ref={ref}>
+      <Panel title="Today's schedule" badge="4 upcoming" badgeClass="bg-peach text-peach-deep" badgeDot>
+        {appts.map((a, idx) => (
+          <motion.div
+            key={a.name}
+            initial={{ opacity: 0, x: -8 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -8 }}
+            transition={{ duration: 0.4, delay: inView ? idx * 0.15 : 0, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center justify-between py-2.5"
+          >
+            <span className="flex items-center gap-2.5 text-sm text-ink">
+              <span className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-peach-deep bg-peach rounded px-2 py-0.5">
+                <Clock className="w-3 h-3 text-peach-deep" />
+                {a.time}
+              </span>
+              {a.name}
             </span>
-            {a.name}
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-muted">
-            <FontAwesomeIcon icon={faCalendarCheck} className="text-[10px] text-peach-deep" />
-            {a.status}
-          </span>
-        </div>
-      ))}
-    </Panel>
+            <span className="flex items-center gap-1.5 text-xs text-muted">
+              <FontAwesomeIcon icon={faCalendarCheck} className="text-[10px] text-peach-deep" />
+              {a.status}
+            </span>
+          </motion.div>
+        ))}
+      </Panel>
+    </div>
   );
 }
 
 function OperationsDashboard() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { amount: 0.35, once: false });
+
   const flows = [
-    { app: "Slack",    icon: faSlack,       action: "Notifications",  tasks: "48 sent"    },
-    { app: "HubSpot",  icon: faHubspot,     action: "CRM sync",        tasks: "120 records"},
-    { app: "Drive",    icon: faGoogleDrive, action: "File automation", tasks: "32 docs"    },
+    { app: "Slack",    icon: faSlack,       action: "Notifications",  num: 48,  suffix: " sent"    },
+    { app: "HubSpot",  icon: faHubspot,     action: "CRM sync",        num: 120, suffix: " records"},
+    { app: "Drive",    icon: faGoogleDrive, action: "File automation", num: 32,  suffix: " docs"    },
   ];
   return (
-    <Panel title="Automation status" badge="Running" badgeClass="bg-sage text-sage-deep">
-      {flows.map((f) => (
-        <div key={f.app} className="flex items-center justify-between py-2.5">
-          <span className="flex items-center gap-2.5 text-sm text-ink">
-            <span className="w-7 h-7 rounded-lg bg-white border border-line flex items-center justify-center text-muted shadow-xs">
-              <FontAwesomeIcon icon={f.icon} className="text-xs text-brand" />
+    <div ref={ref}>
+      <Panel title="Automation status" badge="Running" badgeClass="bg-sage text-sage-deep" badgeDot>
+        {flows.map((f, idx) => (
+          <motion.div
+            key={f.app}
+            initial={{ opacity: 0, x: -8 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -8 }}
+            transition={{ duration: 0.4, delay: inView ? idx * 0.15 : 0, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center justify-between py-2.5"
+          >
+            <span className="flex items-center gap-2.5 text-sm text-ink">
+              <span className="w-7 h-7 rounded-lg bg-white border border-line flex items-center justify-center text-muted shadow-xs">
+                <FontAwesomeIcon icon={f.icon} className="text-xs text-brand" />
+              </span>
+              <span>
+                {f.app}
+                <span className="block text-xs text-muted leading-tight">{f.action}</span>
+              </span>
             </span>
-            <span>
-              {f.app}
-              <span className="block text-xs text-muted leading-tight">{f.action}</span>
+            <span className="text-xs font-semibold text-sky-deep bg-sky rounded-full px-2.5 py-1">
+              <MiniCounter to={f.num} suffix={f.suffix} inView={inView} />
             </span>
-          </span>
-          <span className="text-xs font-semibold text-sky-deep bg-sky rounded-full px-2.5 py-1">{f.tasks}</span>
-        </div>
-      ))}
-    </Panel>
+          </motion.div>
+        ))}
+      </Panel>
+    </div>
   );
 }
 
@@ -107,6 +166,7 @@ function OperationsDashboard() {
 const caseStudies = [
   {
     id: "real-estate", category: "Real Estate", icon: faHouse,
+    image: "/projects/real-estate-project.jpg",
     iconWrap: "from-brand-tint to-brand-tint-2 text-brand",
     accentBar: "from-brand via-[#9a8af5] to-transparent",
     title: "AI Lead Assistant for Real Estate",
@@ -116,6 +176,7 @@ const caseStudies = [
   },
   {
     id: "clinic", category: "Healthcare", icon: faHospital,
+    image: "/projects/clinic-project.jpg",
     iconWrap: "from-peach to-[#fde8d7] text-peach-deep",
     accentBar: "from-peach-deep via-[#e88a55] to-transparent",
     title: "Appointment Assistant for Clinics",
@@ -125,6 +186,7 @@ const caseStudies = [
   },
   {
     id: "operations", category: "Operations", icon: faBuilding,
+    image: "/projects/operations-project.jpg",
     iconWrap: "from-sky to-[#d6e8f5] text-sky-deep",
     accentBar: "from-sky-deep via-[#4a9cc4] to-transparent",
     title: "Workflow Automation for Operations",
@@ -169,6 +231,22 @@ export default function CaseStudies() {
                   className={`h-[3px] w-full rounded-full bg-gradient-to-r ${s.accentBar} mb-5 opacity-60 group-hover:opacity-100 transition-opacity duration-300`}
                 />
 
+                {/* Project visual preview */}
+                <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden mb-5 bg-paper border border-line/60 group-hover:border-brand/30 shadow-xs transition-all">
+                  <Image
+                    src={s.image}
+                    alt={s.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                  <span className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-md text-[10px] font-bold text-ink shadow-sm uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+                    {s.category}
+                  </span>
+                </div>
+
                 <div className="flex items-center gap-3 mb-5">
                   <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${s.iconWrap} flex items-center justify-center shadow-sm`}>
                     <FontAwesomeIcon icon={s.icon} className="text-sm" />
@@ -178,7 +256,7 @@ export default function CaseStudies() {
 
                 <Dash />
 
-                <h3 className="font-semibold text-lg text-ink leading-snug">{s.title}</h3>
+                <h3 className="font-bold text-lg text-ink tracking-tight leading-snug">{s.title}</h3>
                 <p className="mt-2 text-sm text-ink-soft leading-relaxed flex-1">{s.description}</p>
 
                 <ul className="mt-5 space-y-2">

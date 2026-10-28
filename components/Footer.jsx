@@ -10,16 +10,16 @@ import { useGsapReveal } from "@/components/useGsap";
 
 const footerLinks = {
   Services: [
-    { label: "AI Automation", href: "/#services" },
-    { label: "AI Voice Agents", href: "/#services" },
-    { label: "AI Chatbots", href: "/#services" },
-    { label: "AI Integrations", href: "/#services" },
+    { label: "AI Automation", href: "/services" },
+    { label: "AI Voice Agents", href: "/services" },
+    { label: "AI Chatbots", href: "/services" },
+    { label: "AI Integrations", href: "/services" },
   ],
   Company: [
-    { label: "About us", href: "/#about" },
+    { label: "About us", href: "/about" },
     { label: "Case studies", href: "/case-studies" },
     { label: "All services", href: "/services" },
-    { label: "Contact", href: "/#contact" },
+    { label: "Contact", href: "/contact" },
   ],
 };
 
@@ -107,16 +107,16 @@ export default function Footer() {
                 <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-tint to-brand-tint-2 text-brand flex items-center justify-center">
                   <FontAwesomeIcon icon={faEnvelope} className="text-xs" />
                 </span>
-                <a href="mailto:hello@nextgenflow.ai" className="hover:text-brand transition-colors">hello@nextgenflow.ai</a>
+                <a href="mailto:info@nexgenflow.com" className="hover:text-brand transition-colors">info@nexgenflow.com</a>
               </li>
               <li className="flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-peach to-[#fde8d7] text-peach-deep flex items-center justify-center">
                   <FontAwesomeIcon icon={faGlobe} className="text-xs" />
                 </span>
-                www.nextgenflow.ai
+                www.nexgenflow.com
               </li>
             </ul>
-            <Link href="/#contact" className="btn btn-primary btn-sm mt-6">Book a call</Link>
+            <Link href="/contact" className="btn btn-primary btn-sm mt-6">Book a call</Link>
           </div>
         </div>
 

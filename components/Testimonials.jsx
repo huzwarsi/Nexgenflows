@@ -9,7 +9,7 @@ import { useGsapReveal } from "@/components/useGsap";
 const testimonials = [
   {
     id: 1,
-    quote: "NextGenFlow delivered exactly what we needed. Their AI automation system handles so many of our enquiries automatically — it's been a genuine time-saver for our whole team.",
+    quote: "NexGenFlow delivered exactly what we needed. Their AI automation system handles so many of our enquiries automatically — it's been a genuine time-saver for our whole team.",
     name: "Sarah Chen",
     role: "Operations Manager",
     company: "TechCorp Inc.",

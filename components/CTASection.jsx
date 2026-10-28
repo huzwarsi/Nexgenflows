@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faRocket, faBolt, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { ScrollTextReveal } from "@/components/Motion";
 import { useGsapReveal } from "@/components/useGsap";
 
 const features = [
@@ -43,9 +44,9 @@ export default function CTASection() {
         <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-10">
           <div data-gsap className="max-w-xl">
             <p className="eyebrow mb-4">Get started today</p>
-            <h2 className="display text-4xl sm:text-5xl">
+            <ScrollTextReveal className="display text-4xl sm:text-5xl">
               Let&apos;s find the right flow <em>for your business</em>
-            </h2>
+            </ScrollTextReveal>
             <p className="mt-4 text-ink-soft leading-relaxed max-w-md">
               Whether you&apos;re starting your AI journey or looking to scale your automation — let&apos;s talk about
               what&apos;s possible.

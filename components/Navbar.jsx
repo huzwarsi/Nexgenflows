@@ -13,9 +13,9 @@ const navLinks = [
   { label: "Home",         href: "/"            },
   { label: "Services",     href: "/services"    },
   { label: "Case Studies", href: "/case-studies"},
-  { label: "Solutions",    href: "#solutions"   },
-  { label: "About",        href: "#about"       },
-  { label: "Contact",      href: "#contact"     },
+  { label: "Solutions",    href: "/#solutions"  },
+  { label: "About",        href: "/about"       },
+  { label: "Contact",      href: "/contact"     },
 ];
 
 export default function Navbar() {
@@ -49,15 +49,16 @@ export default function Navbar() {
   }, { scope: headerRef });
 
   const handleHashClick = (e, href) => {
-    if (!href.startsWith("#")) return;
+    const hash = href.startsWith("/#") ? href.slice(1) : href;
+    if (!hash.startsWith("#")) return;
     e.preventDefault();
     setMobileOpen(false);
-    if (pathname !== "/") { router.push("/" + href); return; }
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    if (pathname !== "/") { router.push("/" + hash); return; }
+    document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
   };
 
   const isActive = (href) => {
-    if (href.startsWith("#")) return false;
+    if (href.startsWith("#") || href.startsWith("/#")) return false;
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
@@ -67,8 +68,9 @@ export default function Navbar() {
       isActive(href) ? "text-brand" : "text-ink-soft hover:text-ink"
     }`;
 
-  const renderLink = (link, onClick) =>
-    link.href.startsWith("#") ? (
+  const renderLink = (link, onClick) => {
+    const isHash = link.href.startsWith("#") || link.href.startsWith("/#");
+    return isHash ? (
       <a href={link.href} onClick={(e) => handleHashClick(e, link.href)} className={linkClass(link.href)}>
         {link.label}
       </a>
@@ -81,6 +83,7 @@ export default function Navbar() {
         )}
       </Link>
     );
+  };
 
   return (
     <>
@@ -129,7 +132,7 @@ export default function Navbar() {
 
           <div ref={ctaRef} className="hidden lg:block">
             <Link
-              href="/#contact"
+              href="/contact"
               className="btn btn-primary btn-sm flex items-center gap-1.5"
             >
               Book a Strategy Call
@@ -174,7 +177,7 @@ export default function Navbar() {
               ))}
             </ul>
             <Link
-              href="/#contact"
+              href="/contact"
               onClick={() => setMobileOpen(false)}
               className="btn btn-primary w-full mt-3"
             >

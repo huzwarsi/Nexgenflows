@@ -1,6 +1,6 @@
 "use client";
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { motion, useInView, AnimatePresence, animate } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight, faCheck, faStar, faRobot, faHouse,
@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { CheckCircle2, Bell, CalendarCheck, MessageSquare, Database, FileText, PhoneCall, Sparkles, User, Bot, AlertCircle, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Reveal, SectionHeading, CountUp } from "@/components/Motion";
@@ -69,42 +70,30 @@ const testimonial = {
 const projects = [
   {
     id: "clinic", category: "Healthcare", icon: faHospital, badge: "New",
-    title: "Appointment Assistant for a Clinic",
-    desc: "Automated scheduling, reminders and rescheduling — reducing no-shows by 45%.",
-    stat: { value: "−45%", label: "No-shows" },
+    image: "/projects/clinic-project.jpg",
+    title: "Appointment Assistant for Clinics",
+    desc: "Autonomous patient booking, calendar sync and reminder sequences.",
+    stat: { value: "−45%", label: "Patient No-shows" },
     iconWrap: "from-peach to-[#fde8d7] text-peach-deep",
     accentBar: "from-peach-deep via-[#e88a55] to-transparent",
-    lines: [
-      { text: "09:00 — Emma W. (Confirmed)", icon: CheckCircle2, color: "text-sage-deep" },
-      { text: "10:30 — James L. (Reminder sent)", icon: Bell, color: "text-peach-deep" },
-      { text: "14:00 — Maria G. (Auto-booked)", icon: CalendarCheck, color: "text-brand" },
-    ],
   },
   {
     id: "operations", category: "Operations", icon: faBuilding, badge: "Live",
+    image: "/projects/operations-project.jpg",
     title: "Workflow Automation for Operations",
-    desc: "Connected Slack, HubSpot, and Drive — automating 120+ records and 48 notifications daily.",
-    stat: { value: "13h", label: "Saved weekly" },
+    desc: "Autonomous cross-app data routing across Slack, HubSpot, and Drive.",
+    stat: { value: "13h", label: "Saved Weekly" },
     iconWrap: "from-sky to-[#d6e8f5] text-sky-deep",
     accentBar: "from-sky-deep via-[#4a9cc4] to-transparent",
-    lines: [
-      { text: "Slack: 48 notifications sent", icon: MessageSquare, color: "text-brand" },
-      { text: "HubSpot: 120 records synced", icon: Database, color: "text-peach-deep" },
-      { text: "Drive: 32 docs automated", icon: FileText, color: "text-sky-deep" },
-    ],
   },
   {
     id: "voice", category: "Real Estate", icon: faHouse, badge: "Featured",
-    title: "AI Voice Agent for Bookings",
-    desc: "An AI voice agent that handles inbound calls, qualifies callers and books viewings automatically.",
-    stat: { value: "24/7", label: "Coverage" },
+    image: "/projects/voice-ai-project.jpg",
+    title: "AI Voice Agent for Real Estate",
+    desc: "Human-grade voice agent handling inbound inquiries and scheduling viewings 24/7.",
+    stat: { value: "24/7", label: "Live Coverage" },
     iconWrap: "from-brand-tint to-brand-tint-2 text-brand",
     accentBar: "from-brand via-[#9a8af5] to-transparent",
-    lines: [
-      { text: "Call answered in 1.2s", icon: PhoneCall, color: "text-sage-deep" },
-      { text: "Lead qualified: high intent", icon: Sparkles, color: "text-brand" },
-      { text: "Viewing booked: tomorrow 3pm", icon: CalendarCheck, color: "text-peach-deep" },
-    ],
   },
 ];
 
@@ -169,45 +158,168 @@ function AnimatedChart() {
 }
 
 /* ── Featured mock card ─────────────────────────────────────── */
+function MockCounter({ to, duration = 1.8, started }) {
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    if (!started) {
+      setVal(0);
+      return;
+    }
+    const controls = animate(0, to, {
+      duration,
+      ease: "easeOut",
+      onUpdate: (latest) => setVal(Math.round(latest)),
+    });
+    return () => controls.stop();
+  }, [started, to, duration]);
+
+  return <span>{val}</span>;
+}
+
 function FeaturedMock() {
+  const cardRef = useRef(null);
+  // Responsive scroll trigger: triggers when in view, resets when scrolled out of view on mobile/PC
+  const inView = useInView(cardRef, { once: false, amount: 0.35 });
+  const [started, setStarted] = useState(false);
+  const [step, setStep] = useState(0); // 0: init, 1: user msg, 2: typing, 3: reply 1, 4: typing 2, 5: confirmed
+
+  useEffect(() => {
+    if (!inView) {
+      setStarted(false);
+      setStep(0);
+      return;
+    }
+
+    setStarted(true);
+
+    // Realistic calm conversation tempo:
+    const t1 = setTimeout(() => setStep(1), 500);   // User message pops in
+    const t2 = setTimeout(() => setStep(2), 1600);  // AI typing dots appear
+    const t3 = setTimeout(() => setStep(3), 4200);  // AI relaxed reply 1 appears (2.6s typing!)
+    const t4 = setTimeout(() => setStep(4), 6200);  // Second typing dots ("Confirming booking...")
+    const t5 = setTimeout(() => setStep(5), 8400);  // Final confirmation appears with checkmark
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+      clearTimeout(t5);
+    };
+  }, [inView]);
+
   return (
-    <div className="relative w-full max-w-[330px]">
-      <div aria-hidden="true" className="absolute inset-0 rounded-3xl blur-2xl opacity-20 bg-gradient-to-br from-brand via-[#9a8af5] to-peach-deep pointer-events-none scale-105" />
-      <div className="relative card p-5 border border-brand/15 shadow-[0_24px_50px_-24px_rgba(60,45,150,0.38)]">
-        <div className="flex items-center justify-between mb-4">
+    <div ref={cardRef} className="relative w-full max-w-[340px] pt-4 sm:pt-0">
+      <div aria-hidden="true" className="absolute inset-0 rounded-3xl blur-2xl opacity-25 bg-gradient-to-br from-brand via-[#9a8af5] to-peach-deep pointer-events-none scale-105" />
+      <div className="relative card p-5 border border-brand/20 shadow-[0_24px_50px_-24px_rgba(60,45,150,0.38)] bg-white">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-line">
           <span className="flex items-center gap-2 text-sm font-semibold text-ink">
-            <span className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-tint to-brand-tint-2 text-brand flex items-center justify-center">
-              <FontAwesomeIcon icon={faRobot} className="text-xs" />
+            <span className="w-7 h-7 rounded-full bg-gradient-to-br from-brand to-brand-deep text-white flex items-center justify-center shadow-xs">
+              <Bot className="w-4 h-4" />
             </span>
             NexGen Assistant
           </span>
-          <span className="flex items-center gap-1.5 text-xs font-semibold text-sage-deep">
-            <span className="w-1.5 h-1.5 rounded-full bg-sage-deep animate-dot-pulse" /> Active
+          <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Active
           </span>
         </div>
 
-        <div className="space-y-2.5 text-[0.8rem] leading-snug">
-          <div className="flex justify-end">
-            <p className="bg-gradient-to-br from-brand to-brand-deep text-white rounded-2xl rounded-br-md px-3.5 py-2 max-w-[82%]">
-              Tell me about the listing on Baker Street
-            </p>
-          </div>
-          <p className="bg-paper border border-line text-ink rounded-2xl rounded-bl-md px-3.5 py-2 max-w-[88%]">
-            3-bed, £450k. I can book you a viewing — when works?
-          </p>
-          <p className="bg-paper border border-line text-ink rounded-2xl rounded-bl-md px-3.5 py-2 max-w-[88%]">
-            Viewing booked for Thursday, 3pm.
-          </p>
+        <div className="space-y-2.5 text-[0.82rem] leading-snug min-h-[145px] flex flex-col justify-start">
+          {/* Message 1: User Query */}
+          <AnimatePresence>
+            {step >= 1 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="flex justify-end"
+              >
+                <p className="bg-gradient-to-br from-brand to-brand-deep text-white rounded-2xl rounded-br-md px-3.5 py-2 max-w-[85%] shadow-xs">
+                  Tell me about the listing on Baker Street
+                </p>
+              </motion.div>
+            ) : (
+              <div className="h-8" />
+            )}
+          </AnimatePresence>
+
+          {/* Typing 1 */}
+          <AnimatePresence>
+            {step === 2 && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-tint/80 text-brand text-xs w-fit"
+              >
+                <Bot className="w-3.5 h-3.5 animate-bounce" />
+                <span className="text-[11px] font-medium">Assistant analyzing listing</span>
+                <span className="flex gap-1 ml-0.5">
+                  <span className="w-1 h-1 rounded-full bg-brand animate-ping" />
+                  <span className="w-1 h-1 rounded-full bg-brand animate-ping delay-100" />
+                  <span className="w-1 h-1 rounded-full bg-brand animate-ping delay-200" />
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Reply 1 (Relaxed timing) */}
+          <AnimatePresence>
+            {step >= 3 && (
+              <motion.p
+                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="bg-paper border border-line text-ink rounded-2xl rounded-bl-md px-3.5 py-2 max-w-[90%]"
+              >
+                3-bed, £450k. I can book you a viewing — when works?
+              </motion.p>
+            )}
+          </AnimatePresence>
+
+          {/* Typing 2 */}
+          <AnimatePresence>
+            {step === 4 && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-tint/80 text-brand text-xs w-fit"
+              >
+                <CalendarCheck className="w-3.5 h-3.5 animate-bounce" />
+                <span className="text-[11px] font-medium">Confirming booking...</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Reply 2: Confirmation */}
+          <AnimatePresence>
+            {step >= 5 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="bg-emerald-50 border border-emerald-200/70 text-emerald-900 rounded-2xl rounded-bl-md px-3.5 py-2 max-w-[90%] flex items-center justify-between gap-2 shadow-xs"
+              >
+                <span>Viewing booked for Thursday, 3pm.</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 mt-5">
+        {/* Dynamic Animated Metrics */}
+        <div className="grid grid-cols-3 gap-2 mt-5 pt-3 border-t border-line/60">
           {[
-            { label: "Leads",     value: "12", t: "from-brand-tint to-brand-tint-2 text-brand-deep" },
-            { label: "Qualified", value: "9",  t: "from-sage to-[#d4eddc] text-sage-deep"           },
-            { label: "Booked",    value: "5",  t: "from-peach to-[#fde8d7] text-peach-deep"         },
+            { label: "Leads",     value: 12, t: "from-brand-tint to-brand-tint-2 text-brand-deep" },
+            { label: "Qualified", value: 9,  t: "from-sage to-[#d4eddc] text-sage-deep"           },
+            { label: "Booked",    value: 5,  t: "from-peach to-[#fde8d7] text-peach-deep"         },
           ].map((s) => (
             <div key={s.label} className={`bg-gradient-to-br ${s.t} rounded-xl py-2.5 text-center`}>
-              <p className="display text-2xl leading-none">{s.value}</p>
+              <p className="display text-2xl leading-none">
+                <MockCounter to={s.value} started={started} duration={1.6} />
+              </p>
               <p className="text-[0.7rem] mt-1 opacity-80">{s.label}</p>
             </div>
           ))}
@@ -364,7 +476,7 @@ export default function CaseStudiesPage() {
                       {step.num} · {step.label}
                     </span>
                   </div>
-                  <h3 className="font-semibold text-ink leading-snug">{step.title}</h3>
+                  <h3 className="font-extrabold text-base text-ink uppercase tracking-tight leading-snug">{step.title}</h3>
                   <p className="mt-2 text-sm text-ink-soft leading-relaxed">{step.desc}</p>
                 </div>
               ))}
@@ -428,46 +540,53 @@ export default function CaseStudiesPage() {
               }`}
             >
               {visibleProjects.map((p) => (
-                <div key={p.id} data-gsap className="grad-border card p-5 flex flex-col group hover:-translate-y-2">
-                  {/* Per-card gradient accent bar */}
-                  <div
-                    aria-hidden="true"
-                    className={`h-[3px] w-full rounded-full bg-gradient-to-r ${p.accentBar} mb-4 opacity-60 group-hover:opacity-100 transition-opacity duration-300`}
-                  />
-
-                  <div className="flex items-center gap-2.5 mb-4">
-                    <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${p.iconWrap} flex items-center justify-center shadow-sm`}>
-                      <FontAwesomeIcon icon={p.icon} className="text-sm" />
+                <div key={p.id} data-gsap className="grad-border card p-6 flex flex-col group hover:-translate-y-2 transition-all duration-300">
+                  {/* Top Header */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="flex items-center gap-2">
+                      <span className={`w-8 h-8 rounded-lg bg-gradient-to-br ${p.iconWrap} flex items-center justify-center shadow-xs`}>
+                        <FontAwesomeIcon icon={p.icon} className="text-xs" />
+                      </span>
+                      <span className="text-xs font-bold text-ink uppercase tracking-wider">{p.category}</span>
                     </span>
-                    <span className="text-sm font-semibold text-ink-soft">{p.category}</span>
-                    <span className="ml-auto chip border border-brand/10">{p.badge}</span>
+                    <span className="chip text-[11px] font-semibold border border-brand/15 bg-white/80">{p.badge}</span>
                   </div>
 
-                  <ul className="rounded-xl bg-paper border border-line px-3.5 py-1.5 mb-5 divide-y divide-line">
-                    {p.lines.map((lineItem) => {
-                      const LineIcon = lineItem.icon;
-                      return (
-                        <li key={lineItem.text} className="flex items-center gap-2.5 py-2 text-xs text-ink">
-                          <LineIcon className={`w-3.5 h-3.5 flex-shrink-0 ${lineItem.color}`} />
-                          {lineItem.text}
-                        </li>
-                      );
-                    })}
-                  </ul>
+                  {/* Prominent Large Project Visual */}
+                  <div className="relative aspect-[16/11] w-full rounded-2xl overflow-hidden mb-5 bg-paper border border-line shadow-sm group-hover:shadow-md group-hover:border-brand/40 transition-all">
+                    <Image
+                      src={p.image}
+                      alt={p.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80" />
+                    <span className="absolute bottom-3 left-3 px-3 py-1 rounded-lg bg-white/95 backdrop-blur-md text-[11px] font-bold text-ink shadow-sm uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Active Solution
+                    </span>
+                  </div>
 
-                  <h3 className="font-semibold text-ink leading-snug">{p.title}</h3>
-                  <p className="mt-2 text-sm text-ink-soft leading-relaxed flex-1">{p.desc}</p>
+                  {/* Clean Content */}
+                  <h3 className="font-bold text-base sm:text-lg text-ink tracking-tight leading-snug">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-ink-soft leading-relaxed flex-1">
+                    {p.desc}
+                  </p>
 
+                  {/* Impact Stat & Link */}
                   <div className="mt-5 pt-4 border-t border-line flex items-end justify-between">
                     <div>
-                      <p className="display text-3xl leading-none text-ink">{p.stat.value}</p>
-                      <p className="text-xs text-muted mt-1">{p.stat.label}</p>
+                      <p className="display text-3xl font-extrabold text-brand leading-none">{p.stat.value}</p>
+                      <p className="text-[11px] font-semibold text-muted mt-1 uppercase tracking-wider">{p.stat.label}</p>
                     </div>
                     <Link
                       href="/#contact"
                       className="inline-flex items-center gap-2 text-sm font-semibold text-brand hover:gap-3 transition-all"
                     >
-                      View case study <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
+                      View Case Study <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
                     </Link>
                   </div>
                 </div>

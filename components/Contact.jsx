@@ -1,5 +1,6 @@
 "use client";
 import { useRef } from "react";
+import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faCalendarCheck, faRobot, faBolt } from "@fortawesome/free-solid-svg-icons";
 import { useGsapReveal } from "@/components/useGsap";
@@ -59,14 +60,14 @@ export default function Contact() {
           </ul>
 
           <div data-gsap className="mt-10 flex flex-col items-center gap-3">
-            <a
-              href="mailto:hello@nextgenflow.ai?subject=Strategy%20call"
+            <Link
+              href="/contact"
               className="btn btn-primary px-9 py-4 text-base shadow-[0_8px_32px_-8px_rgba(91,71,224,0.5)] hover:shadow-[0_14px_40px_-8px_rgba(91,71,224,0.6)] transition-shadow"
             >
               Get in touch
               <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
-            </a>
-            <p className="text-sm text-muted">hello@nextgenflow.ai</p>
+            </Link>
+            <p className="text-sm text-muted">info@nexgenflow.com</p>
           </div>
         </div>
       </div>

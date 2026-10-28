@@ -1,112 +1,131 @@
 "use client";
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComments, faMicrophone, faGears, faHandshake,
   faRobot, faPlug, faLightbulb, faCheck,
   faTriangleExclamation, faArrowRight, faGlobe,
-  faEnvelope, faChartLine,
+  faEnvelope, faChartLine, faDatabase, faBrain,
+  faWaveSquare, faNetworkWired,
 } from "@fortawesome/free-solid-svg-icons";
-import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import {
+  faWhatsapp, faInstagram, faFacebook, faSlack, faHubspot,
+} from "@fortawesome/free-brands-svg-icons";
 import { Reveal, SectionHeading } from "@/components/Motion";
 import { useGsapReveal } from "@/components/useGsap";
 
 const categories = [
   {
     id: "chatbots", label: "AI Chatbots & Support", icon: faComments,
+    image: "/projects/service-chatbots.jpg",
     tint: "from-brand-tint to-brand-tint-2", ink: "text-brand",
     panelAccent: "from-brand/10 via-[#9a8af5]/5 to-transparent",
-    description: "Deploy intelligent AI chatbots that handle customer queries 24/7, qualify leads, and deliver instant support — without lifting a finger.",
+    description: "Intelligent 24/7 AI chatbots that capture qualified leads and resolve customer support inquiries on autopilot.",
     integrations: [
-      { icon: faGlobe,     label: "Website",   status: "Published",    ok: true },
-      { icon: faWhatsapp,  label: "WhatsApp",  status: "Connected",    ok: true },
-      { icon: faInstagram, label: "Instagram", status: "Connected",    ok: true },
-      { icon: faEnvelope,  label: "Email",     status: "Needs review", ok: false },
+      { icon: faGlobe,     label: "Website Chat" },
+      { icon: faWhatsapp,  label: "WhatsApp"     },
+      { icon: faInstagram, label: "Instagram DM" },
+      { icon: faEnvelope,  label: "Email Support"},
     ],
-    tags: ["24/7 Support", "Lead Capture", "Multi-channel", "No-code Setup"],
+    tags: ["24/7 Support", "Lead Capture", "Multi-channel", "Instant Answers"],
   },
   {
     id: "voice", label: "AI Voice Agents", icon: faMicrophone,
+    image: "/projects/voice-ai-project.jpg",
     tint: "from-rose to-[#fce9dc]", ink: "text-rose-deep",
     panelAccent: "from-rose/20 via-peach/5 to-transparent",
-    description: "Deploy AI-powered voice agents that handle inbound calls, book appointments, answer FAQs, and qualify leads automatically.",
+    description: "Human-grade conversational voice agents powered by ElevenLabs & WAPI for real-time inbound bookings.",
     integrations: [
-      { icon: faGlobe,     label: "Phone System", status: "Published", ok: true },
-      { icon: faEnvelope,  label: "CRM",          status: "Connected", ok: true },
-      { icon: faChartLine, label: "Analytics",    status: "Connected", ok: true },
+      { icon: faWaveSquare, label: "ElevenLabs" },
+      { icon: faWhatsapp,   label: "WhatsApp"   },
+      { icon: faHandshake,  label: "CRM Sync"   },
+      { icon: faPlug,       label: "WAPI Voice" },
     ],
-    tags: ["Inbound Calls", "Appointment Booking", "Lead Qualification", "Natural Language"],
+    tags: ["ElevenLabs Audio", "WhatsApp Calling", "Smart CRM Sync", "Instant Booking"],
   },
   {
     id: "whatsapp", label: "WhatsApp & Lead Automation", icon: faWhatsapp,
+    image: "/projects/service-whatsapp-lead.jpg",
     tint: "from-sage to-[#d4eddc]", ink: "text-sage-deep",
     panelAccent: "from-sage/20 via-transparent to-transparent",
-    description: "Automate your WhatsApp and lead generation pipelines with AI-driven conversations, instant replies, and smart follow-up sequences.",
+    description: "Automated WhatsApp and social lead pipelines with instant AI replies and CRM synchronization.",
     integrations: [
-      { icon: faWhatsapp,  label: "WhatsApp",  status: "Published",    ok: true },
-      { icon: faInstagram, label: "Instagram", status: "Connected",    ok: true },
-      { icon: faHandshake, label: "Lead CRM",  status: "Needs review", ok: false },
+      { icon: faWhatsapp,  label: "WhatsApp"       },
+      { icon: faFacebook,  label: "FB Lead Ads"    },
+      { icon: faInstagram, label: "Instagram Direct"},
+      { icon: faHandshake, label: "Lead CRM"       },
     ],
-    tags: ["Auto Replies", "Lead Nurturing", "Broadcast Campaigns", "Multi-agent"],
+    tags: ["Auto Replies", "FB Lead Sync", "WhatsApp Chatbot", "Lead Scoring"],
   },
   {
     id: "workflow", label: "AI Workflow Automation", icon: faGears,
+    image: "/projects/service-workflow-n8n.jpg",
     tint: "from-amber to-[#fce9b8]", ink: "text-amber-deep",
     panelAccent: "from-amber/20 via-transparent to-transparent",
-    description: "Connect your tools, eliminate repetitive tasks, and build automated workflows that run 24/7 — freeing your team for high-value work.",
+    description: "Autonomous n8n and Make.com workflows connecting your entire tool stack with zero manual friction.",
     integrations: [
-      { icon: faPlug,      label: "Zapier",   status: "Connected", ok: true },
-      { icon: faGears,     label: "Make.com", status: "Published", ok: true },
-      { icon: faEnvelope,  label: "Slack",    status: "Connected", ok: true },
+      { icon: faNetworkWired, label: "n8n Workflows" },
+      { icon: faGears,        label: "Make.com"      },
+      { icon: faPlug,         label: "WAPI Webhooks" },
+      { icon: faSlack,        label: "Slack Alerts"  },
     ],
-    tags: ["No-code Flows", "Cross-app Sync", "Trigger-based", "Scalable"],
+    tags: ["n8n Workflows", "Make.com", "WAPI & Webhooks", "Zero Manual Tasks"],
   },
   {
     id: "crm", label: "CRM & Sales Automation", icon: faHandshake,
+    image: "/projects/operations-project.jpg",
     tint: "from-rose to-[#fce9dc]", ink: "text-rose-deep",
     panelAccent: "from-rose/20 via-transparent to-transparent",
-    description: "Automate your entire sales pipeline from lead capture to close — with AI-driven follow-ups, scoring, and CRM updates in real time.",
+    description: "Automated sales pipelines with instant lead scoring, AI follow-ups, and live CRM routing.",
     integrations: [
-      { icon: faHandshake, label: "HubSpot",    status: "Published",    ok: true },
-      { icon: faChartLine, label: "Salesforce", status: "Connected",    ok: true },
-      { icon: faEnvelope,  label: "Outreach",   status: "Needs review", ok: false },
+      { icon: faHubspot,   label: "HubSpot"      },
+      { icon: faHandshake, label: "CRM Pipeline" },
+      { icon: faChartLine, label: "Lead Scoring" },
+      { icon: faEnvelope,  label: "Outreach Mail"},
     ],
     tags: ["Lead Scoring", "Auto Follow-up", "Pipeline Sync", "Revenue Insights"],
   },
   {
     id: "agents", label: "Custom AI Agents", icon: faRobot,
+    image: "/projects/real-estate-project.jpg",
     tint: "from-sky to-[#d6e8f5]", ink: "text-sky-deep",
     panelAccent: "from-sky/20 via-transparent to-transparent",
-    description: "Build bespoke AI agents tailored to your specific business logic — autonomous systems that think, plan, and act on your behalf.",
+    description: "Bespoke autonomous AI agents tailored to your business logic, reasoning, and tool execution.",
     integrations: [
-      { icon: faRobot,     label: "Custom LLM",  status: "Published", ok: true },
-      { icon: faGears,     label: "Automation",  status: "Connected", ok: true },
-      { icon: faChartLine, label: "Reporting",   status: "Connected", ok: true },
+      { icon: faRobot,     label: "Custom LLM"     },
+      { icon: faBrain,     label: "Tool Calling"   },
+      { icon: faGears,     label: "Automation Hub" },
+      { icon: faChartLine, label: "Live Analytics" },
     ],
-    tags: ["Custom Logic", "Multi-model", "API-first", "Enterprise Ready"],
+    tags: ["Autonomous Logic", "Multi-model", "API-first", "Enterprise Ready"],
   },
   {
-    id: "integration", label: "AI Integration", icon: faPlug,
+    id: "integration", label: "AI Integration & RAG", icon: faPlug,
+    image: "/projects/service-rag-supabase.jpg",
     tint: "from-sage to-[#d4eddc]", ink: "text-sage-deep",
     panelAccent: "from-sage/15 via-transparent to-transparent",
-    description: "Seamlessly integrate AI capabilities into your existing tech stack — APIs, platforms, databases, and third-party tools unified.",
+    description: "Production RAG architectures and Supabase vector database integration for proprietary data.",
     integrations: [
-      { icon: faPlug,  label: "REST APIs",  status: "Published", ok: true },
-      { icon: faGlobe, label: "Web Apps",   status: "Connected", ok: true },
-      { icon: faGears, label: "Databases",  status: "Connected", ok: true },
+      { icon: faDatabase, label: "Supabase DB"    },
+      { icon: faBrain,    label: "RAG Systems"    },
+      { icon: faPlug,     label: "Vector Store"   },
+      { icon: faGlobe,    label: "REST & Webhooks"},
     ],
-    tags: ["API Integration", "Data Sync", "Webhook Support", "Secure"],
+    tags: ["Supabase Vector", "RAG Systems", "Custom LLM API", "Enterprise Knowledge"],
   },
   {
     id: "consulting", label: "AI Consulting & Strategy", icon: faLightbulb,
+    image: "/gallery/strategy-session.jpg",
     tint: "from-peach to-[#fde8d7]", ink: "text-peach-deep",
     panelAccent: "from-peach/20 via-transparent to-transparent",
-    description: "Get expert guidance on your AI roadmap — from identifying automation opportunities to designing scalable, future-proof AI strategies.",
+    description: "Strategic workflow audits, ROI modeling, and scalable AI infrastructure blueprints.",
     integrations: [
-      { icon: faLightbulb, label: "Strategy",    status: "Published", ok: true },
-      { icon: faChartLine, label: "ROI Analysis", status: "Connected", ok: true },
-      { icon: faRobot,     label: "AI Audit",    status: "Connected", ok: true },
+      { icon: faLightbulb, label: "Workflow Audit" },
+      { icon: faChartLine, label: "ROI Modeling"   },
+      { icon: faRobot,     label: "AI Architecture"},
+      { icon: faCheck,     label: "Tech Selection" },
     ],
     tags: ["AI Roadmap", "ROI Modeling", "Tech Selection", "Implementation Plan"],
   },
@@ -130,7 +149,7 @@ export default function Services() {
           Powerful AI solutions for <em>modern businesses</em>
         </SectionHeading>
 
-        <Reveal data-gsap className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+        <Reveal data-gsap className="grid grid-cols-1 lg:grid-cols-[290px_1fr] gap-6 items-start">
           {/* ── Tab sidebar ── */}
           <div
             role="tablist"
@@ -172,7 +191,7 @@ export default function Services() {
                   >
                     <FontAwesomeIcon icon={cat.icon} className="text-xs" />
                   </span>
-                  <span className="relative z-10">{cat.label}</span>
+                  <span className="relative z-10 font-semibold">{cat.label}</span>
                 </button>
               );
             })}
@@ -187,74 +206,89 @@ export default function Services() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                className="relative card overflow-hidden p-6 lg:p-9 border border-line hover:border-brand/20 transition-colors"
+                className="relative card overflow-hidden p-6 sm:p-8 lg:p-10 border border-line hover:border-brand/20 transition-all shadow-sm"
               >
                 {/* Subtle per-service gradient wash in top-right corner */}
                 <div
                   aria-hidden="true"
-                  className={`pointer-events-none absolute top-0 right-0 w-72 h-48 bg-gradient-to-bl ${active.panelAccent} rounded-bl-3xl`}
+                  className={`pointer-events-none absolute top-0 right-0 w-80 h-56 bg-gradient-to-bl ${active.panelAccent} rounded-bl-3xl`}
                 />
 
-                <div className="relative flex items-start gap-4">
-                  <span className={`w-13 h-13 w-12 h-12 rounded-2xl bg-gradient-to-br ${active.tint} ${active.ink} flex items-center justify-center flex-shrink-0 shadow-sm`}>
-                    <FontAwesomeIcon icon={active.icon} className="text-lg" />
-                  </span>
+                <div className="relative grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8 items-center">
                   <div>
-                    <h3 className="display text-3xl">{active.label}</h3>
-                    <p className="mt-2 text-ink-soft leading-relaxed max-w-xl">{active.description}</p>
-                  </div>
-                </div>
-
-                <div className="relative mt-8">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">
-                    Integrations &amp; status
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {active.integrations.map((it) => (
-                      <div
-                        key={it.label}
-                        className="grad-top flex items-center justify-between rounded-xl border border-line bg-paper px-4 py-3 transition-colors hover:border-brand/20 hover:bg-brand-tint/30"
-                      >
-                        <span className="flex items-center gap-3 text-sm font-medium text-ink">
-                          <span className="w-7 h-7 rounded-lg bg-white border border-line flex items-center justify-center text-muted">
-                            <FontAwesomeIcon icon={it.icon} className="text-xs" />
-                          </span>
-                          {it.label}
-                        </span>
-                        <span
-                          className={`flex items-center gap-1.5 text-xs font-semibold ${
-                            it.ok ? "text-sage-deep" : "text-amber-deep"
-                          }`}
-                        >
-                          <FontAwesomeIcon
-                            icon={it.ok ? faCheck : faTriangleExclamation}
-                            className="text-[10px]"
-                          />
-                          {it.status}
-                        </span>
+                    <div className="flex items-start gap-4">
+                      <span className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${active.tint} ${active.ink} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                        <FontAwesomeIcon icon={active.icon} className="text-base" />
+                      </span>
+                      <div>
+                        <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink leading-tight">
+                          {active.label}
+                        </h3>
+                        <p className="mt-2.5 text-sm sm:text-base text-ink-soft leading-relaxed max-w-lg">
+                          {active.description}
+                        </p>
                       </div>
-                    ))}
+                    </div>
+
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {active.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="chip border border-brand/10 hover:border-brand/30 transition-colors text-xs font-semibold"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Clean Connected Ecosystem Chips */}
+                    <div className="mt-8 pt-6 border-t border-line">
+                      <p className="text-xs font-bold uppercase tracking-wider text-muted mb-3 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Core Integrations
+                      </p>
+                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-2.5">
+                        {active.integrations.map((it) => (
+                          <div
+                            key={it.label}
+                            className="flex items-center gap-2.5 rounded-xl border border-line bg-paper/70 px-3.5 py-2.5 hover:border-brand/30 hover:bg-white transition-all shadow-2xs"
+                          >
+                            <span className="w-6 h-6 rounded-lg bg-white border border-line flex items-center justify-center text-brand flex-shrink-0">
+                              <FontAwesomeIcon icon={it.icon} className="text-xs" />
+                            </span>
+                            <span className="text-xs font-semibold text-ink truncate">{it.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Prominent High-Resolution Service Architecture Preview */}
+                  <div className="relative aspect-[16/11] w-full rounded-2xl overflow-hidden border border-line/80 shadow-md group bg-paper">
+                    <Image
+                      src={active.image}
+                      alt={active.label}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                    <span className="absolute bottom-3.5 left-3.5 px-3 py-1 rounded-lg bg-white/95 backdrop-blur-md text-[11px] font-bold text-ink shadow-sm uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+                      Live System Architecture
+                    </span>
                   </div>
                 </div>
 
-                <div className="relative mt-6 flex flex-wrap gap-2">
-                  {active.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="chip border border-brand/10 hover:border-brand/30 transition-colors"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="relative mt-8 pt-6 border-t border-line flex items-center justify-between flex-wrap gap-4">
+                  <p className="text-xs text-muted">Ready to deploy within 14 days with full technical handover.</p>
+                  <button
+                    onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
+                    className="btn btn-primary btn-sm shadow-md"
+                  >
+                    Deploy This System
+                    <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
+                  </button>
                 </div>
-
-                <button
-                  onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
-                  className="relative btn btn-primary mt-8"
-                >
-                  Get Started
-                  <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
-                </button>
               </motion.div>
             </AnimatePresence>
           </div>
