@@ -117,7 +117,7 @@ const categories = [
   },
   {
     id: "consulting", label: "AI Consulting & Strategy", icon: faLightbulb,
-    image: "/gallery/strategy-session.jpg",
+    image: "/projects/service-ai-roadmap.jpg",
     tint: "from-peach to-[#fde8d7]", ink: "text-peach-deep",
     panelAccent: "from-peach/20 via-transparent to-transparent",
     description: "Strategic workflow audits, ROI modeling, and scalable AI infrastructure blueprints.",
